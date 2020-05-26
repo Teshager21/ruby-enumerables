@@ -16,27 +16,45 @@ module Enumerable
     end
   end
 
-  ####################################
+  ###################################
 
   def my_each_with_index
-    for i in 0...length
-      yield i, self[i]
+    if block_given?
+      for i in 0...length
+        yield i, self[i]
+      end
+    else
+      to_enum
     end
   end
+
+  ###################################
+  def my_select
+    temp = []
+    my_each do |i|
+      temp << i if yield i
+    end
+    temp
+  end
+
+  #-----------------------------------#
 end
 
-######################################################
+#####################################
 
-ar = [1, 2, 'a', 3, 'b']
+ar = [1, 2, 5, 3, 8]
 
 ar.my_each do |a|
   puts "this is: #{a}"
 end
 
-# ar.my_each
+ar.my_each
 
 ar.my_each_with_index do |index, val|
   puts "index #{index} for #{val}"
 end
+
+n = ar.my_select(&:odd?)
+p n
 
 # rubocop:enable Style/For

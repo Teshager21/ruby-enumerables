@@ -15,14 +15,28 @@ module Enumerable
       to_enum
     end
   end
+
+  ####################################
+
+  def my_each_with_index
+    for i in 0...length
+      yield i, self[i]
+    end
+  end
 end
 
-# include Enumerable
+######################################################
+
 ar = [1, 2, 'a', 3, 'b']
 
 ar.my_each do |a|
   puts "this is: #{a}"
 end
-ar.my_each
+
+# ar.my_each
+
+ar.my_each_with_index do |index, val|
+  puts "index #{index} for #{val}"
+end
 
 # rubocop:enable Style/For

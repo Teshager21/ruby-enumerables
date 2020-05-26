@@ -13,8 +13,8 @@ module Enumerable
       end
     else
       to_enum
-     end
-   end
+    end
+  end
 end
 
 # include Enumerable

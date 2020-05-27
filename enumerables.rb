@@ -147,6 +147,21 @@ module Enumerable
     counter
   end
 
+  ########################################################
+  def my_map
+    mapped = []
+    if block_given?
+      my_each do |item|
+        temp = yield item
+        mapped << temp
+      end
+    end
+
+    return to_enum(:my_map) unless block_given?
+
+    mapped
+  end
+
   #-----------------------------------#
 end
 
@@ -173,10 +188,13 @@ end
 # p [nil, false].my_none?
 # p [nil, false, true].my_none?
 
-ary = [1, 2, 4, 2]
-p ary.my_count
-p ary.my_count(2)
-p ary.my_count(&:even?)
+# ary = [1, 2, 4, 2]
+# p ary.my_count
+# p ary.my_count(2)
+# p ary.my_count(&:even?)
+
+p([1, 2, 3, 4].my_map { |i| i * i })
+p [1, 2, 3, 4, 5].my_map
 
 ###########################################################
 

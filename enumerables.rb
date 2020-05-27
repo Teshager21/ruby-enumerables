@@ -129,10 +129,29 @@ module Enumerable
     true
   end
 
+  ########################################################
+  def my_count(arg = nil)
+    counter = 0
+    return length if arg.nil? and !block_given?
+
+    if block_given?
+      my_each do |item|
+        counter += 1 if yield item
+      end
+    else
+      my_each do |item|
+        counter += 1 if item == arg
+      end
+    end
+
+    counter
+  end
+
   #-----------------------------------#
 end
 
 ######### End of Enumerable Module ############################
+
 # p [].my_all?
 # p [2, 4, 6, 8, 10].my_all?(Numeric)
 # p [2, 4, 9].my_all?(&:even?)
@@ -145,14 +164,22 @@ end
 # p [nil, true, 'h'].my_any?(Integer)
 # p "#{[nil, true, 99].my_any?} :yeap"
 # p [].my_any?
-p(%w[ant bear cat].my_none? { |word| word.length == 5 })
-p(%w[ant bear cat].my_none? { |word| word.length >= 4 })
-p %w[ant bear cat].my_none?(/d/)
-p [1, 2, 3.14, 14, 42].my_none?(Float)
-p [].my_none?
-p [nil].my_none?
-p [nil, false].my_none?
-p [nil, false, true].my_none?
+# p(%w[ant bear cat].my_none? { |word| word.length == 5 })
+# p(%w[ant bear cat].my_none? { |word| word.length >= 4 })
+# p %w[ant bear cat].my_none?(/d/)
+# p [1, 2, 3.14, 14, 42].my_none?(Float)
+# p [].my_none?
+# p [nil].my_none?
+# p [nil, false].my_none?
+# p [nil, false, true].my_none?
+
+ary = [1, 2, 4, 2]
+p ary.my_count
+p ary.my_count(2)
+p ary.my_count(&:even?)
+
+###########################################################
+
 # rubocop:enable Style/For
 # rubocop:enable Style/MultipleComparison
 # rubocop:enable Metrics/PerceivedComplexity

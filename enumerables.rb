@@ -1,8 +1,10 @@
-# rubocop:disable Style/For
 # rubocop:disable Style/MultipleComparison
 # rubocop:disable Metrics/PerceivedComplexity
 # rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Style/For
 # rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/ModuleLength
+
 module Enumerable
   # check the input
   # hash, array?
@@ -97,6 +99,35 @@ module Enumerable
     end
     false
   end
+  #########################################################
+
+  def my_none?(arg = nil)
+    if !arg.nil?
+      if arg.is_a? Regexp
+        my_each do |item|
+          return false if item.to_s.match(arg)
+        end
+      elsif arg.is_a? Class
+        my_each do |item|
+          return false if item.instance_of? arg
+        end
+      else
+        my_each do |item|
+          return false if item == arg
+        end
+      end
+    elsif block_given?
+      my_each do |item|
+        eval = yield item
+        return false if eval == true
+      end
+    elsif !block_given? && arg.nil?
+      my_each do |item|
+        return false unless item.nil? or item == false
+      end
+    end
+    true
+  end
 
   #-----------------------------------#
 end
@@ -108,14 +139,23 @@ end
 # p [8, 'alen', 'smith'].my_all?(String)
 # p %w[john john].my_all?('john')
 
-p { %w[ant bear cat].my_any? { |word| word.length >= 3 } }
-p { %w[ant bear cat].my_any? { |word| word.length > 4 } }
-p [nil, false, nil].my_any?(/t/)
-p [nil, true, 'h'].my_any?(Integer)
-p "#{[nil, true, 99].my_any?} :yeap"
-p [].my_any?
+# p { %w[ant bear cat].my_any? { |word| word.length >= 3 } }
+# p { %w[ant bear cat].my_any? { |word| word.length > 4 } }
+# p [nil, false, nil].my_any?(/t/)
+# p [nil, true, 'h'].my_any?(Integer)
+# p "#{[nil, true, 99].my_any?} :yeap"
+# p [].my_any?
+p(%w[ant bear cat].my_none? { |word| word.length == 5 })
+p(%w[ant bear cat].my_none? { |word| word.length >= 4 })
+p %w[ant bear cat].my_none?(/d/)
+p [1, 2, 3.14, 14, 42].my_none?(Float)
+p [].my_none?
+p [nil].my_none?
+p [nil, false].my_none?
+p [nil, false, true].my_none?
 # rubocop:enable Style/For
 # rubocop:enable Style/MultipleComparison
 # rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ModuleLength

@@ -14,9 +14,14 @@ module Enumerable
   ###############################################
   # considering only arrays
   def my_each
+    temp_self = if is_a? Range
+                  to_a
+                else
+                  self
+                end
     if block_given?
-      for i in 0...length
-        yield self[i]
+      for i in 0...to_a.length
+        yield temp_self[i]
       end
     else
       to_enum(:my_each)
@@ -145,12 +150,11 @@ module Enumerable
         counter += 1 if item == arg
       end
     end
-
     counter
   end
 
   ########################################################
-  def my_map
+  def my_map(_arg)
     mapped = []
     if block_given?
       my_each do |item|
@@ -158,7 +162,6 @@ module Enumerable
         mapped << temp
       end
     end
-
     return to_enum(:my_map) unless block_given?
 
     mapped
@@ -237,7 +240,7 @@ end
 # p [1,2,3,4].my_inject{|sum,a| sum+=a}
 p [1, 2, 3, 4, 5, 8].my_inject(:+)
 p [2, 3, 4].my_inject(:*)
-p (1..4).my_inject(:+)
+# p (1..4).my_inject(:+)
 p [1, 2, 3, 4].multiply_els
 
 ###########################################################

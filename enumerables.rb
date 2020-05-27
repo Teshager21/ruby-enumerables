@@ -4,6 +4,8 @@
 # rubocop:disable Style/For
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Metrics/ModuleLength
+# rubocop:disable Security/Eval
+# rubocop:disable Style/EvalWithLocation
 
 module Enumerable
   # check the input
@@ -162,6 +164,38 @@ module Enumerable
     mapped
   end
 
+  ###########################################
+
+  def my_inject(arg = nil, symb = nil)
+    if is_a? Range
+      length = to_a.length
+      temp_self = to_a
+    else
+      temp_self = self
+    end
+
+    p temp_self
+    memo = if arg.nil? or arg.is_a? Symbol
+             first
+           else
+             arg
+           end
+    symb = arg if arg.is_a? Symbol and symb.nil?
+    unless symb.nil?
+      mymethod = symb.to_s
+      for item in 1...to_a.length
+
+        memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
+      end
+    end
+    if block_given?
+      for item in 1...length
+        memo = yield memo, self[item]
+      end
+    end
+    memo
+  end
+
   #-----------------------------------#
 end
 
@@ -193,8 +227,12 @@ end
 # p ary.my_count(2)
 # p ary.my_count(&:even?)
 
-p([1, 2, 3, 4].my_map { |i| i * i })
-p [1, 2, 3, 4, 5].my_map
+# p([1, 2, 3, 4].my_map { |i| i * i })
+# p [1, 2, 3, 4, 5].my_map
+# p [1,2,3,4].my_inject{|sum,a| sum+=a}
+p [1, 2, 3, 4, 5, 8].my_inject(:+)
+p [2, 3, 4].my_inject(:*)
+p (1..4).my_inject(:+)
 
 ###########################################################
 
@@ -204,3 +242,5 @@ p [1, 2, 3, 4, 5].my_map
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/ModuleLength
+# rubocop:enable Security/Eval
+# rubocop:enable Style/EvalWithLocation

@@ -1,6 +1,6 @@
 # Ruby Enumerable methods
 
-In this project,we implemented the bubble sort algorithm. We focused on the use of yield and passing a block to a method.
+In this project,I implemented a Custom Enumerable method. The methods implemented include: #my_each, #my_each_with_index, #my_select, # my_all, #my_any ,#my_none ,#my_count, #my_map, #my_inject, my_map and multiply_els.
 
 ## Built With
 
@@ -8,9 +8,7 @@ In this project,we implemented the bubble sort algorithm. We focused on the use 
 
 ## Demo
 
-![screenshot](images/bubble.png)
-
-## Milestone
+![screenshot](images/enumerable.png)
 
 ## Getting Started
 
@@ -42,7 +40,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Usage
 
-    In any browser, open the index.html file
+    run it by typing in the terminal ,the word ruby followed by a space and the filename
 
 ## Authors
 
@@ -57,7 +55,7 @@ To get a local copy up and running follow these simple example steps.
 
     Contributions, issues and feature requests are welcome!
 
-Feel free to check the [issues page]().
+Feel free to check the [issues page](https://github.com/Teshager21/ruby-enumerables/issues).
 
 ## Show your support
 

@@ -1,11 +1,4 @@
-# rubocop:disable Style/MultipleComparison
-# rubocop:disable Metrics/PerceivedComplexity
-# rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Style/For
-# rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/ModuleLength
-# rubocop:disable Security/Eval
-# rubocop:disable Style/EvalWithLocation
+# rubocop:disable Style/MultipleComparison, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Style/For, Metrics/MethodLength, Metrics/ModuleLength, Security/Eval, Style/EvalWithLocation
 
 module Enumerable
   def my_each
@@ -194,11 +187,4 @@ module Enumerable
   end
 end
 
-# rubocop:enable Style/For
-# rubocop:enable Style/MultipleComparison
-# rubocop:enable Metrics/PerceivedComplexity
-# rubocop:enable Metrics/CyclomaticComplexity
-# rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/ModuleLength
-# rubocop:enable Security/Eval
-# rubocop:enable Style/EvalWithLocation
+# rubocop:enable all

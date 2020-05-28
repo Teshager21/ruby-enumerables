@@ -10,8 +10,8 @@ module Enumerable
       end
 
       if block_given?
-        for i in 0...to_a.length
-          yield temp_self[i]
+        for i in temp_self
+          yield i
         end
       else
         to_enum(:my_each)
@@ -26,7 +26,7 @@ module Enumerable
   def my_each_with_index
     if block_given?
       for i in (0...length)
-        yield i, self[i]
+        yield i
       end
     else
       to_enum
@@ -34,6 +34,8 @@ module Enumerable
   end
 
   def my_select
+    return to_enum(:my_select) unless block_given?
+
     temp = []
     my_each do |i|
       temp << i if yield i
@@ -91,7 +93,7 @@ module Enumerable
       end
     elsif !block_given? && arg.nil?
       my_each do |item|
-        return true if item.nil? == false or item != false
+        return true if item.nil? == false and item != false
       end
     end
     false
@@ -141,14 +143,19 @@ module Enumerable
     counter
   end
 
-  def my_map(&block)
+  def my_map(arg)
     mapped = []
-    exec = block if block_given?
-    if exec.is_a? Proc
+    if arg.is_a? Proc
       my_each do |item|
-        mapped << exec.call(item)
+        mapped << arg.call(item)
       end
-      return to_enum(:my_map) unless exec.is_a? Proc
+    end
+    if block_given? and !arg.is_a? Proc
+      my_each do |item|
+        mapped << yield(item)
+      end
+    elsif !block_given? and !arg.is_a? Proc
+      return to_enum(:my_map)
     end
 
     mapped
@@ -166,25 +173,46 @@ module Enumerable
            else
              arg
            end
-    symb = arg if arg.is_a? Symbol
-    unless symb.nil?
-      mymethod = symb.to_s
-      for item in 1...to_a.length
 
-        memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
+    symb = arg if arg.is_a? Symbol
+    mymethod = symb.to_s unless symb.nil?
+    if !block_given?
+
+      if arg.nil? or arg.is_a? Symbol
+        for item in 1...to_a.length
+          memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
+        end
+      elsif !arg.nil? and !arg.is_a? Symbol or (!arg.nil? and !symb.nil?)
+        for item in 0...temp_self.to_a.length
+
+          memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
+
+        end
       end
-    end
-    if block_given?
+
+    elsif arg.nil? and !block_given?
       for item in 1...length
+        memo = yield memo, self[item]
+      end
+    elsif !block_given? and !arg.nil?
+      for item in 0...length
         memo = yield memo, self[item]
       end
     end
     memo
   end
-
-  def multiply_els
-    my_inject(:*)
-  end
 end
+
+def multiply_els
+  my_inject(:*)
+end
+# p([1, 2, 3].my_each { |num| num })
+# p [false, false, nil].my_any?
+# my_proc = Proc.new { |num| num > 10 }
+
+# p [11, 2, 3, 15].my_map(my_proc) {|num| num < 10 }
+# p [1, 2, 3].my_inject(1) { |memo, num| memo + num }
+p (1..3).my_inject(1, :+)
+p (5..10).my_inject(2, :*)
 
 # rubocop:enable all

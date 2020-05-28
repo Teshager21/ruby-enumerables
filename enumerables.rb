@@ -8,11 +8,6 @@
 # rubocop:disable Style/EvalWithLocation
 
 module Enumerable
-  # check the input
-  # hash, array?
-  # empty block?
-  ###############################################
-  # considering only arrays
   def my_each
     if !is_a? Hash
       if is_a? Range
@@ -35,8 +30,6 @@ module Enumerable
     end
   end
 
-  ############# my each with index #############
-
   def my_each_with_index
     if block_given?
       for i in (0...length)
@@ -47,7 +40,6 @@ module Enumerable
     end
   end
 
-  # ############## my select #####################
   def my_select
     temp = []
     my_each do |i|
@@ -56,7 +48,6 @@ module Enumerable
     temp
   end
 
-  # ############# my all? ###########################
   def my_all?(arg = nil)
     if !arg.nil?
       if arg.is_a? Regexp
@@ -84,7 +75,6 @@ module Enumerable
     end
     true
   end
-  #################################################
 
   def my_any?(arg = nil)
     if !arg.nil?
@@ -113,7 +103,6 @@ module Enumerable
     end
     false
   end
-  #########################################################
 
   def my_none?(arg = nil)
     if !arg.nil?
@@ -143,7 +132,6 @@ module Enumerable
     true
   end
 
-  ########################################################
   def my_count(arg = nil)
     counter = 0
     return length if arg.nil? and !block_given?
@@ -160,7 +148,6 @@ module Enumerable
     counter
   end
 
-  ########################################################
   def my_map(&block)
     mapped = []
     exec = block if block_given?
@@ -174,23 +161,19 @@ module Enumerable
     mapped
   end
 
-  ###########################################
-
   def my_inject(arg = nil, symb = nil)
-    if is_a? Range
-      length = to_a.length
-      temp_self = to_a
-    else
-      temp_self = self
-    end
+    temp_self = if is_a? Range
+                  to_a
+                else
+                  self
+                end
 
-    p temp_self
     memo = if arg.nil? or arg.is_a? Symbol
              first
            else
              arg
            end
-    symb = arg if arg.is_a? Symbol and symb.nil?
+    symb = arg if arg.is_a? Symbol
     unless symb.nil?
       mymethod = symb.to_s
       for item in 1...to_a.length
@@ -205,60 +188,11 @@ module Enumerable
     end
     memo
   end
-  ############################################################
 
   def multiply_els
     my_inject(:*)
   end
-
-  #-----------------------------------#
 end
-
-######### End of Enumerable Module ############################
-
-# p [].my_all?
-# p [2, 4, 6, 8, 10].my_all?(Numeric)
-# p [2, 4, 9].my_all?(&:even?)
-# p [8, 'alen', 'smith'].my_all?(String)
-# p %w[john john].my_all?('john')
-
-# p { %w[ant bear cat].my_any? { |word| word.length >= 3 } }
-# p { %w[ant bear cat].my_any? { |word| word.length > 4 } }
-# p [nil, false, nil].my_any?(/t/)
-# p [nil, true, 'h'].my_any?(Integer)
-# p "#{[nil, true, 99].my_any?} :yeap"
-# p [].my_any?
-# p(%w[ant bear cat].my_none? { |word| word.length == 5 })
-# p(%w[ant bear cat].my_none? { |word| word.length >= 4 })
-# p %w[ant bear cat].my_none?(/d/)
-# p [1, 2, 3.14, 14, 42].my_none?(Float)
-# p [].my_none?
-# p [nil].my_none?
-# p [nil, false].my_none?
-# p [nil, false, true].my_none?
-
-# ary = [1, 2, 4, 2]
-# p ary.my_count
-# p ary.my_count(2)
-# p ary.my_count(&:even?)
-# s=Proc.new{ |i| i * i }}
-# p [1,2,3].s
-# p([1, 2, 3, 4].my_map { |i| i * i })
-# p [1, 2, 3, 4, 5].my_map
-# p [1,2,3,4].my_inject{|sum,a| sum+=a}
-# p [1, 2, 3, 4, 5, 8].my_inject(:+)
-# p [2, 3, 4].my_inject(:*)
-# p (1..4).my_inject(:+)
-# p [1, 2, 3, 4].multiply_els
-# p [1, 2, 3, 4, 5, 8].my_map(:+)
-# p [1, 2, 3, 4, 5, 8].my_map
-# p [1,2,3,4].my_each {|item| puts item}
-# s={:color => 'white',:age=>20}
-#  p s.is_a? Hash
-# # p s.values[0]
-#  p s.my_each {|item,val| puts val;puts item}
-
-###########################################################
 
 # rubocop:enable Style/For
 # rubocop:enable Style/MultipleComparison

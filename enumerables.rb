@@ -14,17 +14,24 @@ module Enumerable
   ###############################################
   # considering only arrays
   def my_each
-    temp_self = if is_a? Range
-                  to_a
-                else
-                  self
-                end
-    if block_given?
-      for i in 0...to_a.length
-        yield temp_self[i]
+    if !is_a? Hash
+      if is_a? Range
+        temp_self = to_a
+      elsif is_a? Array
+        temp_self = self
       end
-    else
-      to_enum(:my_each)
+
+      if block_given?
+        for i in 0...to_a.length
+          yield temp_self[i]
+        end
+      else
+        to_enum(:my_each)
+      end
+    elsif is_a? Hash
+      for i in 0..keys.length
+        yield keys[i], values[i]
+      end
     end
   end
 
@@ -154,15 +161,15 @@ module Enumerable
   end
 
   ########################################################
-  def my_map(_arg)
+  def my_map(&block)
     mapped = []
-    if block_given?
+    exec = block if block_given?
+    if exec.is_a? Proc
       my_each do |item|
-        temp = yield item
-        mapped << temp
+        mapped << exec.call(item)
       end
+      return to_enum(:my_map) unless exec.is_a? Proc
     end
-    return to_enum(:my_map) unless block_given?
 
     mapped
   end
@@ -234,14 +241,22 @@ end
 # p ary.my_count
 # p ary.my_count(2)
 # p ary.my_count(&:even?)
-
+# s=Proc.new{ |i| i * i }}
+# p [1,2,3].s
 # p([1, 2, 3, 4].my_map { |i| i * i })
 # p [1, 2, 3, 4, 5].my_map
 # p [1,2,3,4].my_inject{|sum,a| sum+=a}
-p [1, 2, 3, 4, 5, 8].my_inject(:+)
-p [2, 3, 4].my_inject(:*)
+# p [1, 2, 3, 4, 5, 8].my_inject(:+)
+# p [2, 3, 4].my_inject(:*)
 # p (1..4).my_inject(:+)
-p [1, 2, 3, 4].multiply_els
+# p [1, 2, 3, 4].multiply_els
+# p [1, 2, 3, 4, 5, 8].my_map(:+)
+# p [1, 2, 3, 4, 5, 8].my_map
+# p [1,2,3,4].my_each {|item| puts item}
+# s={:color => 'white',:age=>20}
+#  p s.is_a? Hash
+# # p s.values[0]
+#  p s.my_each {|item,val| puts val;puts item}
 
 ###########################################################
 

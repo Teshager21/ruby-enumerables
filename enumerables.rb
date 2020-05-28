@@ -206,13 +206,5 @@ end
 def multiply_els
   my_inject(:*)
 end
-# p([1, 2, 3].my_each { |num| num })
-# p [false, false, nil].my_any?
-# my_proc = Proc.new { |num| num > 10 }
-
-# p [11, 2, 3, 15].my_map(my_proc) {|num| num < 10 }
-# p [1, 2, 3].my_inject(1) { |memo, num| memo + num }
-p (1..3).my_inject(1, :+)
-p (5..10).my_inject(2, :*)
 
 # rubocop:enable all

@@ -183,20 +183,20 @@ module Enumerable
           memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
         end
       elsif !arg.nil? and !arg.is_a? Symbol or (!arg.nil? and !symb.nil?)
-        for item in 0...temp_self.to_a.length
+        for item in 0...temp_self.length
 
           memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
 
         end
       end
 
-    elsif arg.nil? and !block_given?
+    elsif arg.nil? and block_given?
       for item in 1...length
         memo = yield memo, self[item]
       end
-    elsif !block_given? and !arg.nil?
-      for item in 0...length
-        memo = yield memo, self[item]
+    elsif block_given? and !arg.nil?
+      for item in 0...temp_self.length
+        memo = yield memo, temp_self[item]
       end
     end
     memo
@@ -206,5 +206,12 @@ end
 def multiply_els
   my_inject(:*)
 end
-
+c = [1, 2, 3].my_inject(1) { |memo, num| memo + num }
+puts c
+d = (1..3).my_inject(1) { |memo, num| memo + num }
+puts d
+e = %w[dog door rod blade].my_inject { |memo, word| memo.length > word.length ? memo : word }
+puts e
+f = (5..10).my_inject(2, :*)
+puts f
 # rubocop:enable all

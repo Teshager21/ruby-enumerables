@@ -202,23 +202,8 @@ module Enumerable
   end
 end
 
-def multiply_els
-  my_inject(:*)
+def multiply_els(arr)
+  arr.my_inject(:*)
 end
-c = [1, 2, 3].my_inject(1) { |memo, num| memo + num }
-puts c
-d = (1..3).my_inject(1) { |memo, num| memo + num }
-puts d
-e = %w[dog door rod blade].my_inject { |memo, word| memo.length > word.length ? memo : word }
-puts e
-f = (5..10).my_inject(2, :*)
-puts f
-g = [1, 2, 3].my_map { |num| num < 10 }
-p g
-h = [1, 2, 3].my_each { |num| num }
-p h
-i = [1, 2, 3].my_each_with_index { |num| num }
-p i
-j = [1, 2, 3].my_select
-p j
+
 # rubocop:enable all

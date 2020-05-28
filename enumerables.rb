@@ -24,13 +24,12 @@ module Enumerable
   end
 
   def my_each_with_index
-    if block_given?
-      for i in (0...length)
-        yield i
-      end
-    else
-      to_enum
+    return to_enum unless block_given?
+
+    for i in (0...length)
+      yield self[i], i
     end
+    self
   end
 
   def my_select
@@ -143,7 +142,7 @@ module Enumerable
     counter
   end
 
-  def my_map(arg)
+  def my_map(arg = nil)
     mapped = []
     if arg.is_a? Proc
       my_each do |item|
@@ -214,4 +213,12 @@ e = %w[dog door rod blade].my_inject { |memo, word| memo.length > word.length ? 
 puts e
 f = (5..10).my_inject(2, :*)
 puts f
+g = [1, 2, 3].my_map { |num| num < 10 }
+p g
+h = [1, 2, 3].my_each { |num| num }
+p h
+i = [1, 2, 3].my_each_with_index { |num| num }
+p i
+j = [1, 2, 3].my_select
+p j
 # rubocop:enable all

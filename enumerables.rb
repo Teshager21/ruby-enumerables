@@ -2,23 +2,18 @@
 
 module Enumerable
   def my_each
-    if !is_a? Hash
-      if is_a? Range
-        temp_self = to_a
-      elsif is_a? Array
-        temp_self = self
-      end
+    return to_enum unless block_given?
 
-      if block_given?
-        for i in temp_self
-          yield i
-        end
-      else
-        to_enum(:my_each)
-      end
-    elsif is_a? Hash
-      for i in 0..keys.length
+    temp_self = if is_a? Range
+                  to_a
+                else
+                  self
+                end
+    for i in 0...temp_self.length
+      if temp_self.is_a? Hash
         yield keys[i], values[i]
+      elsif temp_self.is_a? Array
+        yield temp_self[i]
       end
     end
   end

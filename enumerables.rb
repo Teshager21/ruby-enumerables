@@ -4,11 +4,7 @@ module Enumerable
   def my_each
     return to_enum unless block_given?
 
-    temp_self = if is_a? Range
-                  to_a
-                else
-                  self
-                end
+    is_a? temp_self = Range ? to_a : self
     for i in 0...temp_self.length
       if temp_self.is_a? Hash
         yield keys[i], values[i]

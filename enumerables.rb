@@ -147,7 +147,6 @@ module Enumerable
     elsif !block_given? and !arg.is_a? Proc
       return to_enum(:my_map)
     end
-
     mapped
   end
 
@@ -157,29 +156,23 @@ module Enumerable
                 else
                   self
                 end
-
     memo = if arg.nil? or arg.is_a? Symbol
              first
            else
              arg
            end
-
     symb = arg if arg.is_a? Symbol
     mymethod = symb.to_s unless symb.nil?
     if !block_given?
-
       if arg.nil? or arg.is_a? Symbol
         for item in 1...to_a.length
           memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
         end
       elsif !arg.nil? and !arg.is_a? Symbol or (!arg.nil? and !symb.nil?)
         for item in 0...temp_self.length
-
           memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
-
         end
       end
-
     elsif arg.nil? and block_given?
       for item in 1...length
         memo = yield memo, self[item]
@@ -196,5 +189,4 @@ end
 def multiply_els(arr)
   arr.my_inject(:*)
 end
-
 # rubocop:enable all

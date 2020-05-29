@@ -2,23 +2,16 @@
 
 module Enumerable
   def my_each
-    if !is_a? Hash
-      if is_a? Range
-        temp_self = to_a
-      elsif is_a? Array
-        temp_self = self
-      end
+    return to_enum unless block_given?
 
-      if block_given?
-        for i in temp_self
-          yield i
-        end
-      else
-        to_enum(:my_each)
-      end
-    elsif is_a? Hash
-      for i in 0..keys.length
+    temp_self = is_a?(Range) ? to_a : self
+    p "been here)! #{temp_self}"
+    for i in 0...temp_self.length
+      if temp_self.is_a? Hash
         yield keys[i], values[i]
+      elsif temp_self.is_a? Array
+
+        yield temp_self[i]
       end
     end
   end
@@ -50,7 +43,7 @@ module Enumerable
         end
       elsif arg.is_a? Class
         my_each do |item|
-          return false unless item.instance_of? arg
+          return false unless item.is_a? arg
         end
       else
         my_each do |item|
@@ -78,7 +71,7 @@ module Enumerable
         end
       elsif arg.is_a? Class
         my_each do |item|
-          return true if item.instance_of? arg
+          return true if item.is_a? arg
         end
       else
         my_each do |item|
@@ -106,7 +99,7 @@ module Enumerable
         end
       elsif arg.is_a? Class
         my_each do |item|
-          return false if item.instance_of? arg
+          return false if item.is_a? arg
         end
       else
         my_each do |item|
@@ -156,7 +149,6 @@ module Enumerable
     elsif !block_given? and !arg.is_a? Proc
       return to_enum(:my_map)
     end
-
     mapped
   end
 
@@ -166,29 +158,23 @@ module Enumerable
                 else
                   self
                 end
-
     memo = if arg.nil? or arg.is_a? Symbol
              first
            else
              arg
            end
-
     symb = arg if arg.is_a? Symbol
     mymethod = symb.to_s unless symb.nil?
     if !block_given?
-
       if arg.nil? or arg.is_a? Symbol
         for item in 1...to_a.length
           memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
         end
       elsif !arg.nil? and !arg.is_a? Symbol or (!arg.nil? and !symb.nil?)
         for item in 0...temp_self.length
-
           memo = eval "#{memo}#{mymethod}#{temp_self[item]}"
-
         end
       end
-
     elsif arg.nil? and block_given?
       for item in 1...length
         memo = yield memo, self[item]
@@ -206,4 +192,8 @@ def multiply_els(arr)
   arr.my_inject(:*)
 end
 
+p [2, 1, 99].my_all?(Numeric)
+p [11, 33, 99].is_a? Numeric
+
+#  p [1,2,3,3].my_all?(Numeric)
 # rubocop:enable all
